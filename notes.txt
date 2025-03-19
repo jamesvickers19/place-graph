@@ -1,0 +1,7 @@
+Need ways to add location as point of interest (target) or candidate location (source)
+    - by searching in map (place search), then maybe a confirmation?
+    - putting a pin on the map
+
+Need to track target locations versus candidate source locations
+
+Use Matrix API to do analysis and comparison of candidate source locations

@@ -1,0 +1,61 @@
+// alternative of fetchMapBoxDirectionsMatrix
+  // const accessToken = process.env.REACT_APP_MAPBOX_API_TOKEN;
+  // const urlCoordinates = toMapBoxUrlCoordinates(markers.map((m) => m.position));
+  // const url = `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${urlCoordinates}?access_token=${accessToken}`;
+  // const response = await fetch(url);
+  // if (!response.ok) {
+  //   throw new Error(`HTTP error from MapBox! status: ${response.status}`);
+  // }
+  // return response.json();
+
+
+// return (
+//   <div className="App" style={{ width: "100%", height: "100%" }}>
+
+//     {/* <table>
+//       <thead>
+//         <tr>
+//           <th></th>
+//           {coordinates.map((_, index) => (
+//             <th key={index}>Location {index + 1}</th>
+//           ))}
+//         </tr>
+//       </thead>
+//       <tbody>
+//         {matrix.map((row, rowIndex) => (
+//           <tr key={rowIndex}>
+//             <th>Location {rowIndex + 1}</th>
+//             {row.map((duration, colIndex) => (
+//               <td key={colIndex}>{duration} seconds</td>
+//             ))}
+//           </tr>
+//         ))}
+//       </tbody>
+//     </table> */}
+//     <MapContainer
+//       // TODO pick this to include all markers somehow
+//       center={[35.079753, -106.604488]}
+//       zoom={15}
+//       scrollWheelZoom={false}
+//       style={{ width: "1200px", height: "700px" }}
+//     >
+//       <TileLayer
+//         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+//         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+//       />
+//       {markers.map((m) => (
+//         <MapMarker {...m} />
+//       ))}
+//     </MapContainer>
+//     <div>
+//       {/* @ts-ignore */}
+//       <SearchBox
+//         accessToken={mapboxToken}
+//         options={{
+//           language: "en",
+//           country: "US",
+//         }}
+//       />
+//     </div>
+//   </div>
+// );
