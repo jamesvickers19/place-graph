@@ -105,6 +105,10 @@ function App() {
     mapInstanceRef.current.on("load", () => {
       setMapLoaded(true);
     });
+    return () => {
+      // Clean up the map instance on component unmount
+      mapInstanceRef.current?.remove();
+    };
   }, []);
 
   return (
