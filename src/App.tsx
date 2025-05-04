@@ -6,6 +6,7 @@ import mapboxgl from "mapbox-gl";
 import MapboxMatrix from "@mapbox/mapbox-sdk/services/matrix";
 import { SearchBox } from "@mapbox/search-js-react";
 import { useEffect, useRef, useState } from "react";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const accessToken =
   "pk.eyJ1IjoibGFtYmRhdGFsbGMiLCJhIjoiY20yODUyNXZ0MHJ1cDJqcHZsam9qNWh1NSJ9.XXfij76q9d89cmrsYKBAFg";
@@ -93,6 +94,7 @@ function App() {
   const mapInstanceRef = useRef<any>();
   const [mapLoaded, setMapLoaded] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [markerPosition, setMarkerPosition] = useState<LatLon | null>(null);
   useEffect(() => {
     mapboxgl.accessToken = accessToken;
 
@@ -111,6 +113,15 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (markerPosition && mapInstanceRef.current) {
+      // Add a marker to the map
+      new mapboxgl.Marker()
+        .setLngLat([markerPosition.lon, markerPosition.lat])
+        .addTo(mapInstanceRef.current);
+    }
+  }, [markerPosition]);
+
   return (
     <>
       {/* @ts-ignore */}
@@ -122,9 +133,19 @@ function App() {
         onChange={(d) => {
           setInputValue(d);
         }}
-        marker
+        onRetrieve={(result) => {
+          // Extract the coordinates from the selected place
+          const coordinates = result.features[0]?.geometry?.coordinates;
+          if (coordinates) {
+            setMarkerPosition({ lon: coordinates[0], lat: coordinates[1] });
+          }
+        }}
       />
-      <div id="map-container" ref={mapContainerRef} style={{ height: 300 }} />
+      <div
+        id="map-container"
+        ref={mapContainerRef}
+        style={{ height: 800, width: "100%s" }}
+      />
     </>
   );
 }
