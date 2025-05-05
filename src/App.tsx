@@ -94,6 +94,10 @@ type PointOfInterest = {
   location: Location;
 };
 
+type PlaceToStay = {
+  location: Location;
+};
+
 type Location = {
   coordinates: LatLon;
   address: string;
@@ -111,6 +115,7 @@ function App() {
   const [pointsOfInterest, setPointsOfInterest] = useState<PointOfInterest[]>(
     []
   );
+  const [placesToStay, setPlacesToStay] = useState<PlaceToStay[]>([]);
 
   function AddPointOfInterestControl() {
     return (
@@ -134,12 +139,49 @@ function App() {
     );
   }
 
+  function AddPlaceToStayControl() {
+    return (
+      <div>
+        <button
+          disabled={!searchedLocation}
+          onClick={() => {
+            if (searchedLocation) {
+              setPlacesToStay((prevPoints) => [
+                ...prevPoints,
+                {
+                  location: searchedLocation,
+                },
+              ]);
+            }
+          }}
+        >
+          Add Place to Stay
+        </button>
+      </div>
+    );
+  }
+
   function PointsOfInterestDisplay() {
     return (
       <div>
         <h2>Points of Interest</h2>
         <ul>
           {pointsOfInterest.map((poi, index) => (
+            <li key={index}>
+              {`Address: ${poi.location.address}, (lat: ${poi.location.coordinates.lat}, lon: ${poi.location.coordinates.lon})`}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  function PlacesToStayDisplay() {
+    return (
+      <div>
+        <h2>Places to Stay</h2>
+        <ul>
+          {placesToStay.map((poi, index) => (
             <li key={index}>
               {`Address: ${poi.location.address}, (lat: ${poi.location.coordinates.lat}, lon: ${poi.location.coordinates.lon})`}
             </li>
@@ -222,7 +264,9 @@ function App() {
         style={{ height: 800, width: "80%" }}
       />
       <AddPointOfInterestControl />
+      <AddPlaceToStayControl />
       <PointsOfInterestDisplay />
+      <PlacesToStayDisplay />
     </>
   );
 }
