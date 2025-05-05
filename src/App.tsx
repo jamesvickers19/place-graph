@@ -1,7 +1,3 @@
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import markerIconPng from "leaflet/dist/images/marker-icon.png";
-import { Icon } from "leaflet";
 import mapboxgl from "mapbox-gl";
 import MapboxMatrix from "@mapbox/mapbox-sdk/services/matrix";
 import { SearchBox } from "@mapbox/search-js-react";
@@ -16,43 +12,6 @@ mapboxgl.accessToken = accessToken;
 type LatLon = {
   lat: number;
   lon: number;
-};
-
-type MapMarkerProps = {
-  position: LatLon;
-  description: string; // might should be react element instead
-};
-
-const markers: MapMarkerProps[] = [
-  {
-    description: "Central and carlisle",
-    position: { lat: 35.079753, lon: -106.604488 },
-  },
-  {
-    description: "Q Station",
-    position: { lat: 35.080415, lon: -106.608691 },
-  },
-  {
-    description: "Ruths Chris Steakhouse",
-    position: { lat: 35.101404, lon: -106.570409 },
-  },
-];
-
-const MapMarker = ({ description, position }: MapMarkerProps) => {
-  return (
-    <Marker
-      position={[position.lat, position.lon]}
-      icon={
-        new Icon({
-          iconUrl: markerIconPng,
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-        })
-      }
-    >
-      <Popup>{description}</Popup>
-    </Marker>
-  );
 };
 
 function toMapBoxUrlCoordinates(coordinates: LatLon[]) {
@@ -263,6 +222,7 @@ function App() {
         ref={mapContainerRef}
         style={{ height: 800, width: "80%" }}
       />
+      {/* TODO show average distance from points of interest for each place to stay */}
       <AddPointOfInterestControl />
       <AddPlaceToStayControl />
       <PointsOfInterestDisplay />
