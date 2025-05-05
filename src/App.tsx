@@ -89,12 +89,66 @@ const onClickCalculate = () => {
     .catch((error) => console.error("Error:", error));
 };
 
+type PointOfInterest = {
+  //name: string;
+  location: Location;
+};
+
+type Location = {
+  coordinates: LatLon;
+  address: string;
+};
+
 function App() {
   const mapContainerRef = useRef<any>();
   const mapInstanceRef = useRef<any>();
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-  const [markerPosition, setMarkerPosition] = useState<LatLon | null>(null);
+  const [searchInputValue, setSearchInputValue] = useState("");
+  const [searchedLocation, setSearchedLocation] = useState<Location | null>(
+    null
+  );
+
+  const [pointsOfInterest, setPointsOfInterest] = useState<PointOfInterest[]>(
+    []
+  );
+
+  function AddPointOfInterestControl() {
+    return (
+      <div>
+        <button
+          disabled={!searchedLocation}
+          onClick={() => {
+            if (searchedLocation) {
+              setPointsOfInterest((prevPoints) => [
+                ...prevPoints,
+                {
+                  location: searchedLocation,
+                },
+              ]);
+            }
+          }}
+        >
+          Add Point of Interest
+        </button>
+      </div>
+    );
+  }
+
+  function PointsOfInterestDisplay() {
+    return (
+      <div>
+        <h2>Points of Interest</h2>
+        <ul>
+          {pointsOfInterest.map((poi, index) => (
+            <li key={index}>
+              {`Address: ${poi.location.address}, (lat: ${poi.location.coordinates.lat}, lon: ${poi.location.coordinates.lon})`}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
   useEffect(() => {
     mapboxgl.accessToken = accessToken;
 
@@ -114,13 +168,31 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (markerPosition && mapInstanceRef.current) {
-      // Add a marker to the map
-      new mapboxgl.Marker()
-        .setLngLat([markerPosition.lon, markerPosition.lat])
+    if (searchedLocation && mapInstanceRef.current) {
+      // Create a new marker
+      const marker = new mapboxgl.Marker()
+        .setLngLat([
+          searchedLocation.coordinates.lon,
+          searchedLocation.coordinates.lat,
+        ])
         .addTo(mapInstanceRef.current);
+
+      // Add a click event listener to the marker
+      marker.getElement().addEventListener("click", () => {
+        console.log("********* marker clicked", {
+          marker,
+          markerPosition: searchedLocation,
+        });
+        // Alternatively, you can update state to show a custom UI
+        // setSelectedMarker(markerPosition);
+      });
+
+      // Cleanup the marker on unmount
+      // return () => {
+      //   marker.remove();
+      // };
     }
-  }, [markerPosition]);
+  }, [searchedLocation]);
 
   return (
     <>
@@ -129,23 +201,28 @@ function App() {
         accessToken={accessToken}
         map={mapInstanceRef.current}
         mapboxgl={mapboxgl}
-        value={inputValue}
+        value={searchInputValue}
         onChange={(d) => {
-          setInputValue(d);
+          setSearchInputValue(d);
         }}
         onRetrieve={(result) => {
-          // Extract the coordinates from the selected place
+          console.log("********* search result", result);
           const coordinates = result.features[0]?.geometry?.coordinates;
           if (coordinates) {
-            setMarkerPosition({ lon: coordinates[0], lat: coordinates[1] });
+            setSearchedLocation({
+              address: result.features[0]?.properties?.full_address,
+              coordinates: { lon: coordinates[0], lat: coordinates[1] },
+            });
           }
         }}
       />
       <div
         id="map-container"
         ref={mapContainerRef}
-        style={{ height: 800, width: "100%s" }}
+        style={{ height: 800, width: "80%" }}
       />
+      <AddPointOfInterestControl />
+      <PointsOfInterestDisplay />
     </>
   );
 }
